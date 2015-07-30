@@ -1,0 +1,1 @@
+{"version":3,"sources":["main.less","main.css"],"names":[],"mappings":"AAAA;EACE,UAAA;EACA,WAAA;CCCD;ADED;EACE,YAAA;CCAD","file":"main.css","sourcesContent":["body {\r\n  margin: 0;\r\n  padding: 0;\r\n}\r\n\r\n.main {\r\n  margin: 8px;\r\n}","body {\n  margin: 0;\n  padding: 0;\n}\n.main {\n  margin: 8px;\n}\n"],"sourceRoot":"/source/"}
