@@ -27,21 +27,34 @@ let TodoListItem = React.createClass({
     render(){
         let done = this.props.todo.done;
         let text = this.props.todo.text;
+        let id = this.props.todo.id;
+        let sync = this.props.todo.sync;
+        let checkbox = null;
+        let iconButtonMenu = null;
+        let deleteIconButton = null;
+        let iconButton = null;
+
         let style = (this.props.todo.done)?{textDecoration:'line-through'}:{};
 
-        let checkbox = <Checkbox checked={done} onCheck={this._onCheck}/>;
-        let iconButton = <IconButton iconClassName="material-icons">more_vert</IconButton>;
+        if (id !== null) {
+            checkbox = <Checkbox checked={done} onCheck={this._onCheck}/>;
+            iconButton = <IconButton iconClassName="material-icons">more_vert</IconButton>;
 
-        let iconButtonMenu =
-            <IconMenu iconButtonElement={iconButton}>
-                <MenuItem primaryText="Delete" onClick={this._onDelete} />
-                <MenuItem primaryText="Edit" onClick={this._onEdit} />
-            </IconMenu>
+            iconButtonMenu =
+                <IconMenu iconButtonElement={iconButton}>
+                    <MenuItem primaryText="Delete" onClick={this._onDelete} />
+                    <MenuItem primaryText="Edit" onClick={this._onEdit} />
+                </IconMenu>
 
-        let deleteIconButton =
-            <IconButton onClick={this._onDelete} iconClassName="material-icons">delete</IconButton>
+            deleteIconButton =
+                <IconButton onClick={this._onDelete} iconClassName="material-icons">delete</IconButton>
+        }
 
-        let textElement = <div style={style}>{text}</div>;
+        let syncText = null;
+        if (sync === true) {
+            syncText = <div><br/><i>Unsaved</i></div>;
+        }
+        let textElement = <div style={style}>{text}{syncText}</div>;
 
         return (
             <span>
@@ -56,28 +69,28 @@ let TodoListItem = React.createClass({
     },
 
     _onCheck(event, isChecked) {
-        let id = this.props.todo.id;
+        let key = this.props.todo.key;
         if (isChecked) {
-            TodoActions.done(id);
+            TodoActions.done(key);
         } else {
-            TodoActions.undone(id);
+            TodoActions.undone(key);
         }
     },
 
     _onDelete() {
-        let id = this.props.todo.id;
-        TodoActions.remove(id);
+        let key = this.props.todo.key;
+        TodoActions.remove(key);
     },
 
     _onEdit(e) {
         e.stopPropagation();
         e.preventDefault();
 
-        let id = this.props.todo.id,
+        let key = this.props.todo.key,
             text = this.props.todo.text;
 
         if (this.props.onEditStart) {
-            this.props.onEditStart(id, text);
+            this.props.onEditStart(key, text);
         }
     }
 });

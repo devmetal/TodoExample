@@ -14,38 +14,38 @@ let TodoActions = {
 
         TodoSyncUtils.createTodo(todo);
     },
-    update(id, text) {
+    update(key, text) {
         AppDispatcher.dispatch({
             type: TodoConstants.TODO_UPDATE,
-            id:id,
+            key:key,
             text:text
         });
 
-        TodoSyncUtils.updateTodo(id, {text: text});
+        TodoSyncUtils.updateTodo(key, {text: text});
     },
-    remove(id) {
+    remove(key) {
         AppDispatcher.dispatch({
             type:TodoConstants.TODO_DELETE,
-            id:id
+            key:key
         });
 
-        TodoSyncUtils.deleteTodo(id);
+        TodoSyncUtils.deleteTodo(key);
     },
-    done(id) {
+    done(key) {
         AppDispatcher.dispatch({
             type:TodoConstants.TODO_DONE,
-            id:id
+            key:key
         });
 
-        TodoSyncUtils.updateTodo(id, {done:true});
+        TodoSyncUtils.updateTodo(key, {done:true});
     },
-    undone(id) {
+    undone(key) {
         AppDispatcher.dispatch({
             type:TodoConstants.TODO_UNDONE,
-            id:id
+            key:key
         });
 
-        TodoSyncUtils.updateTodo(id, {done:false});
+        TodoSyncUtils.updateTodo(key, {done:false});
     }
 };
 

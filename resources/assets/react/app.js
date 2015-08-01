@@ -11,15 +11,6 @@
 
     TodoSyncUtils.receiveTodos();
 
-    var timer;
-    function startSaving() {
-        clearTimeout(timer);
-        TodoSyncUtils.saveTodos();
-        setTimeout(startSaving, 5000);
-    }
-
-    startSaving();
-
     let target = document.querySelector('#container');
     React.render(<TodoApp />, target);
 })();

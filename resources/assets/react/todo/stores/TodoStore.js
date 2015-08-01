@@ -6,32 +6,29 @@ let TodoUtils = require('../utils/TodoUtils');
 
 let CHANGE_EVENT = 'change';
 
-let _todos = {
-    *[Symbol.iterator]() {
-        let keys = Object.keys(this);
-        for (let key of keys) {
-            yield this[key];
-        }
-    }
-};
-
-function receiveTodos(todos) {
-    var keys = Object.keys(todos);
-    keys.forEach((key) => _todos[key] = todos[key]);
+Map.prototype.update = function(key, value) {
+    this.set(key, Object.assign({}, this.get(key), value))
 }
 
-function createTodo(todo) {
-    _todos[todo.id] = todo;
+let _todos = new Map();
+
+function addTodo(todo) {
+    _todos.set(todo.key, todo);
 }
 
-function updateTodo(id, updates) {
-    _todos[id] = Object.assign({}, _todos[id], updates);
+function updateTodo(key, updates) {
+    _todos.update(key, updates);
 }
 
-function destroy(id) {
-    _todos[id].disabled = true;
+function destroyTodo(key) {
+    _todos.delete(key);
 }
 
+function receiveTodos(receivedTodos) {
+    _todos.clear();
+    let keys = Object.keys(receivedTodos);
+    keys.forEach((key) => _todos.set(key, receivedTodos[key]));
+}
 
 let TodoStore = Object.assign({},EventEmitter.prototype, {
     addChangeListener(callback) {
@@ -42,44 +39,52 @@ let TodoStore = Object.assign({},EventEmitter.prototype, {
         this.removeListener(CHANGE_EVENT, callback);
     },
 
-
     emitChange() {
         this.emit(CHANGE_EVENT);
     },
 
     getTodos() {
-        return _todos;
+        return [..._todos.values()];
     }
 });
 
 TodoStore.dispatchToken = AppDispatcher.register((action) => {
     switch(action.type) {
         case TodoConstants.TODO_CREATE:
-            createTodo(action.todo);
+            addTodo(action.todo);
+            TodoStore.emitChange();
+            break;
+        case SyncConstants.CREATE_SUCCESS:
+            updateTodo(action.todo.key, {
+                id: action.todo.id
+            });
             TodoStore.emitChange();
             break;
         case TodoConstants.TODO_UPDATE:
             var text = action.text.trim();
             if (text != '') {
-                updateTodo(action.id, {text:text});
+                updateTodo(action.key, {text:text, sync:true});
                 TodoStore.emitChange();
             }
             break;
         case TodoConstants.TODO_DONE:
-            updateTodo(action.id, {done:true});
+            updateTodo(action.key, {done:true, sync:true});
             TodoStore.emitChange();
             break;
         case TodoConstants.TODO_UNDONE:
-            updateTodo(action.id, {done:false});
+            updateTodo(action.key, {done:false, sync:true});
+            TodoStore.emitChange();
+            break;
+        case SyncConstants.UPDATE_SUCCESS:
+            updateTodo(action.key, {sync:false});
             TodoStore.emitChange();
             break;
         case TodoConstants.TODO_DELETE:
-            destroy(action.id);
+            destroyTodo(action.key);
             TodoStore.emitChange();
             break;
         case SyncConstants.TODOS_RECEIVED:
-            var todos = action.todos;
-            receiveTodos(todos);
+            receiveTodos(action.todos);
             TodoStore.emitChange();
             break;
         default:

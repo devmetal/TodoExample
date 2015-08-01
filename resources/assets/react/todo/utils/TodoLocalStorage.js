@@ -12,17 +12,40 @@ module.exports = {
     updateTodo(id, updates) {
         let todos = getTodos();
         todos[id] = Object.assign({}, todos[id], updates);
-        todos[id].meta.updated = true;
         persistAll(todos);
     },
 
     deleteTodo(id) {
-        console.log(id);
         let todos = getTodos();
-        todos[id].meta.deleted = true;
-        todos[id].meta.updated = false;
         todos[id].disabled = true;
         persistAll(todos);
+    },
+
+    syncStorageAfterServer(results, synced) {
+        let todos = getTodos();
+        let updated = {};
+        for (let i = 0; i<synced.length; i++) {
+            if (synced[i].meta.deleted) {
+                let id = synced[i].id;
+                delete todos[id];
+            } else {
+                let localId = synced[i].id;
+                let srvId = results[i].id;
+                if (localId != srvId) {
+                    let _todo = Object.assign({}, todos[localId], results[i]);
+                    delete todos[localId];
+                    todos[srvId] = _todo;
+                }
+
+                todos[srvId].meta.updated = false;
+                todos[srvId].meta.deleted = false;
+                todos[srvId].meta.persisted = 'SERVER';
+                updated[localId] = todos[srvId];
+            }
+        }
+
+        persistAll(todos);
+        return updated;
     },
 
     getTodos() {

@@ -23,7 +23,7 @@ let Todo = React.createClass({
     getInitialState() {
         return {
             editing:false,
-            editedId:null,
+            editedKey:null,
             editedText:null
         };
     },
@@ -34,9 +34,15 @@ let Todo = React.createClass({
         let todoItems = [];
 
         for (let todo of todos) {
-            if (!todo.disabled) {
-                todoItems.push(<TodoListItem todo={todo} key={todo.id} onEditStart={this._onEditStart} />)
-            }
+            let sync = todo.sync || false;
+            todoItems.push(
+                <TodoListItem
+                    todo={todo}
+                    key={todo.key}
+                    sync={sync}
+                    onEditStart={this._onEditStart}
+                />
+            )
         }
 
         let textField =
@@ -60,30 +66,32 @@ let Todo = React.createClass({
 
     _onSave() {
         let field = this.refs.todoField;
-        let text = field.getValue();
-        TodoActions.create(text);
-        field.clearValue();
+        let text = field.getValue().trim();
+        if (text.length > 0) {
+            TodoActions.create(text);
+            field.clearValue();
+        }
     },
 
     _onUpdate() {
         let field = this.refs.todoField;
         let text = field.getValue();
-        let id = this.state.editedId;
-        TodoActions.update(id,text);
+        let key = this.state.editedKey;
+        TodoActions.update(key,text);
         field.clearValue();
         this.setState({
             editing:false,
             editedText:null,
-            editedId:null
+            editedKey:null
         });
     },
 
-    _onEditStart(id, text) {
+    _onEditStart(key, text) {
         let field = this.refs.todoField;
         field.setValue(text);
         this.setState({
             editing:true,
-            editedId:id,
+            editedKey:key,
             editedText:text
         });
     },
@@ -94,7 +102,7 @@ let Todo = React.createClass({
           field.clearValue();
           this.setState({
               editing:false,
-              editedId:null,
+              editedKey:null,
               editedText:null
           });
       }

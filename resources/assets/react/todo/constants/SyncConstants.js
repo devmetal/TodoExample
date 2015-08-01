@@ -10,6 +10,7 @@ module.exports = keymirror({
     CREATE_SUCCESS:null,
     UPDATE_SUCCESS:null,
     DELETE_SUCCESS:null,
+    SAVE_START: null,
     SAVE_SUCCESS:null,
     SAVE_ERROR:null
 });

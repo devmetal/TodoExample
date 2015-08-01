@@ -1,5 +1,6 @@
 let SyncConstants = require('../constants/SyncConstants');
 let AppDispatcher = require('../dispatchers/AppDispatcher');
+let TodoSyncUtils = require('../utils/TodoSyncUtils');
 
 let SyncActions = {
     todosReceived(todos) {
@@ -16,55 +17,24 @@ let SyncActions = {
         });
     },
 
-    syncStart() {
-        AppDispatcher.dispatch({
-            type:SyncConstants.SYNC_START
-        });
-    },
-
-    syncEnd() {
-        AppDispatcher.dispatch({
-            type:SyncConstants.SYNC_END
-        });
-    },
-
-    syncSuccess(todo) {
-        AppDispatcher.dispatch({
-            type:SyncConstants.SYNC_SUCCESS,
-            synced:todo
-        });
-    },
-
-    createSuccess(id) {
+    createSuccess(todo) {
         AppDispatcher.dispatch({
             type:SyncConstants.CREATE_SUCCESS,
-            id:id
+            todo: todo
         });
     },
 
-    updateSuccess(id) {
+    updateSuccess(key) {
         AppDispatcher.dispatch({
             type:SyncConstants.UPDATE_SUCCESS,
-            id:id
+            key:key
         });
     },
 
-    deleteSuccess(id) {
+    deleteSuccess(key) {
         AppDispatcher.dispatch({
             type:SyncConstants.DELETE_SUCCESS,
-            id:id
-        });
-    },
-
-    saveSuccess() {
-        AppDispatcher.dispatch({
-            type:SyncConstants.SAVE_SUCCESS
-        });
-    },
-
-    saveError() {
-        AppDispatcher.dispatch({
-            type:SyncConstants.SAVE_ERROR
+            key:key
         });
     }
 };
