@@ -10,7 +10,6 @@ let IconMenu = mui.IconMenu;
 
 let MenuItem = require('material-ui/lib/menus/menu-item');
 let MenuDivider = require('material-ui/lib/menus/menu-divider');
-
 let TodoActions = require('../actions/TodoActions');
 
 let TodoListItem = React.createClass({
@@ -27,34 +26,28 @@ let TodoListItem = React.createClass({
     render(){
         let done = this.props.todo.done;
         let text = this.props.todo.text;
-        let id = this.props.todo.id;
-        let sync = this.props.todo.sync;
-        let checkbox = null;
-        let iconButtonMenu = null;
-        let deleteIconButton = null;
-        let iconButton = null;
 
-        let style = (this.props.todo.done)?{textDecoration:'line-through'}:{};
-
-        if (id !== null) {
-            checkbox = <Checkbox checked={done} onCheck={this._onCheck}/>;
-            iconButton = <IconButton iconClassName="material-icons">more_vert</IconButton>;
-
-            iconButtonMenu =
-                <IconMenu iconButtonElement={iconButton}>
-                    <MenuItem primaryText="Delete" onClick={this._onDelete} />
-                    <MenuItem primaryText="Edit" onClick={this._onEdit} />
-                </IconMenu>
-
-            deleteIconButton =
-                <IconButton onClick={this._onDelete} iconClassName="material-icons">delete</IconButton>
+        let style = {};
+        if (this.props.todo.done) {
+            style['textDecoration'] = 'line-through';
         }
 
-        let syncText = null;
-        if (sync === true) {
-            syncText = <div><br/><i>Unsaved</i></div>;
+        if (this.props.todo.sync) {
+            style['color'] = '#aaa';
         }
-        let textElement = <div style={style}>{text}{syncText}</div>;
+
+        let disabled = this.props.todo.id === null;
+
+        let checkbox = <Checkbox disabled={disabled} checked={done} onCheck={this._onCheck}/>;
+        let iconButton = <IconButton iconClassName="material-icons">more_vert</IconButton>;
+        let iconButtonMenu =
+            <IconMenu iconButtonElement={iconButton}>
+                <MenuItem disabled={disabled} primaryText="Delete" onClick={this._onDelete} />
+                <MenuItem disabled={disabled} primaryText="Edit" onClick={this._onEdit} />
+            </IconMenu>
+        let deleteIconButton =
+            <IconButton onClick={this._onDelete} iconClassName="material-icons">delete</IconButton>
+        let textElement = <div style={style}>{text}</div>;
 
         return (
             <span>

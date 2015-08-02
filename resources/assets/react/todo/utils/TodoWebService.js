@@ -1,6 +1,4 @@
-let SyncActions = require('../actions/SyncActions');
 let superagent = require('superagent');
-let TodoStateConstants = require('./TodoStateConstants');
 
 function getCookie(name) {
     var cookieValue = null;
@@ -74,10 +72,7 @@ let deleteTodo = (id) => new Promise((resolve,reject) =>
 
 module.exports = {
     getAllTodos: getTodos,
-
     postTodo: postTodo,
-
     patchTodo: patchTodo,
-
     deleteTodo: deleteTodo
 };

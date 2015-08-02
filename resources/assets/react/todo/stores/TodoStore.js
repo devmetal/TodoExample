@@ -2,7 +2,6 @@ let EventEmitter = require('events').EventEmitter;
 let TodoConstants = require('../constants/TodoConstants');
 let SyncConstants = require('../constants/SyncConstants');
 let AppDispatcher = require('../dispatchers/AppDispatcher');
-let TodoUtils = require('../utils/TodoUtils');
 
 let CHANGE_EVENT = 'change';
 

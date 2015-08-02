@@ -21,13 +21,7 @@ module.exports = {
             key: genKey(),
             id: null,
             text: text,
-            done: false,
-            disabled: false,
-            meta: {
-                persisted:'NONE',
-                updated:false,
-                deleted:false
-            }
+            done: false
         }
     },
 
@@ -40,13 +34,7 @@ module.exports = {
                 key: todo.id,
                 id: todo.id,
                 text: todo.todo,
-                done: _done(todo.done),
-                disabled: false,
-                meta: {
-                    persisted: 'SERVER',
-                    updated: false,
-                    deleted: false
-                }
+                done: _done(todo.done)
             };
 
             keyIdMap.set(todo.id, todo.id);
@@ -65,13 +53,7 @@ module.exports = {
                 id: todo.id,
                 key: key,
                 text: todo.text,
-                done: _done(todo.done),
-                disabled: todo.disabled || false,
-                meta: {
-                    persisted: 'SERVER',
-                    updated: false,
-                    deleted: false
-                }
+                done: _done(todo.done)
             };
 
             keyIdMap.set(key, todo.id);

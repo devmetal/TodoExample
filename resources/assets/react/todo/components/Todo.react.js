@@ -8,7 +8,6 @@ let TextField = mui.TextField;
 let TodoActions = require('../actions/TodoActions');
 let TodoListItem = require('./TodoListItem.react');
 
-
 let Todo = React.createClass({
     childContextTypes: {
         muiTheme: React.PropTypes.object
@@ -36,20 +35,17 @@ let Todo = React.createClass({
         for (let todo of todos) {
             let sync = todo.sync || false;
             todoItems.push(
-                <TodoListItem
-                    todo={todo}
-                    key={todo.key}
-                    sync={sync}
-                    onEditStart={this._onEditStart}
-                />
+                <TodoListItem sync={sync} todo={todo} key={todo.key} onEditStart={this._onEditStart} />
             )
         }
 
+        let label = (this.state.editing === true) ? "Edit this item:" : "I have to do:";
+        let onEnter = (this.state.editing === true) ? this._onUpdate : this._onSave;
         let textField =
             <TextField
-                floatingLabelText={(this.state.editing === true) ? "I will edit this item:" : "I have to do"}
+                floatingLabelText={label}
                 fullWidth={true}
-                onEnterKeyDown={(this.state.editing === true) ? this._onUpdate : this._onSave}
+                onEnterKeyDown={onEnter}
                 onBlur={this._onBlur}
                 ref="todoField"
             />
@@ -75,15 +71,17 @@ let Todo = React.createClass({
 
     _onUpdate() {
         let field = this.refs.todoField;
-        let text = field.getValue();
-        let key = this.state.editedKey;
-        TodoActions.update(key,text);
-        field.clearValue();
-        this.setState({
-            editing:false,
-            editedText:null,
-            editedKey:null
-        });
+        let text = field.getValue().trim();
+        if (text.length > 0) {
+            let key = this.state.editedKey;
+            TodoActions.update(key,text);
+            field.clearValue();
+            this.setState({
+                editing:false,
+                editedText:null,
+                editedKey:null
+            });
+        }
     },
 
     _onEditStart(key, text) {
@@ -97,7 +95,7 @@ let Todo = React.createClass({
     },
 
     _onBlur() {
-      if (this.state.editing) {
+      if (this.state.editing === true) {
           let field = this.refs.todoField;
           field.clearValue();
           this.setState({

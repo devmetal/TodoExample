@@ -1,19 +1,11 @@
 let SyncConstants = require('../constants/SyncConstants');
 let AppDispatcher = require('../dispatchers/AppDispatcher');
-let TodoSyncUtils = require('../utils/TodoSyncUtils');
 
 let SyncActions = {
     todosReceived(todos) {
         AppDispatcher.dispatch({
             type:SyncConstants.TODOS_RECEIVED,
             todos:todos
-        });
-    },
-
-    syncError(err) {
-        AppDispatcher.dispatch({
-            type:SyncConstants.SYNC_ERROR,
-            error:err
         });
     },
 
